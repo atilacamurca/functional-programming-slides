@@ -4,7 +4,6 @@ title: Agenda
 * JavaScript
 * Python
 * Ruby
-* C#
 * Outras
 
 ---
@@ -20,14 +19,176 @@ title: Introdução
 Functional programming requires that functions are first-class, which means that they are treated like any other values and can be passed as arguments to other functions or be returned as a result of a function. Being first-class also means that it is possible to define and manipulate functions from within other functions.
 -->
 
-**Programação funcional** requer que funções sejam tratadas como
+**Programação Funcional** (PF) requer que funções sejam tratadas como
 **valores de primeira importância**, o que significa que elas são tratadas
 com qualquer outro valor e podem ser passadas como argumento para outras funções
-ou serem retornadas com o resultado de uma função.
+ou serem retornadas como resultado de uma função.
 
 Serem tratadas como valores de primeira importância
 resulta também na possibilidade de definir e manipular funções dentro de outras
 funções.
+
+---
+
+title: Linguagens que suportam PF
+
+## Python
+
+---
+
+title: Linguagens que suportam PF
+
+## Ruby
+
+---
+
+title: Linguagens que suportam PF
+
+## JavaScript
+
+Mais próxima de uma linguagem funcional. Suporta:
+
+* Funções de primeira importância
+* Funções podem retornam funções
+* Blocos léxicos + Escopo
+
+<p><img alt="High Class Functions" src="img/high-class-js.jpg"
+style="width: 40%; float: right; position: absolute; top: 350px; left: 600px;"/></p>
+
+---
+
+title: JavaScript
+subtitle: Exemplo - Funções de primeira importância
+
+<pre class="prettyprint" data-lang="javascript">
+var hosts = [];
+/* ... */
+function verify_hosts(h_initial, h_final, <b>callback</b>) {
+	for (var i = h_initial; i < h_final; i++) {
+    	hosts[i].verify();
+    }
+    <b>callback();</b>
+}
+</pre>
+
+---
+
+title: JavaScript
+subtitle: Exemplo - Funções podem retornar funções
+
+<pre class="prettyprint" data-lang="javascript">
+var curry = function (fn) {
+	return function (value1) {
+    	return function (value2) {
+        	return fn(value1, value2);
+        };
+    };
+};
+
+var mult = function(a, b) { return a * b; };
+
+var twice = curry(mult)(2);
+twice(4); // => 8
+twice(6); // => 12
+</pre>
+
+---
+
+title: JavaScript
+subtitle: Exemplo - Blocos léxicos + Escopo
+
+<pre class="prettyprint" data-lang="javascript">
+// global scope
+var scope = "global";
+
+var foo = function(){
+    // inner scope 1
+    var scope = "inner";
+    var myscope = function(){
+        // inner scope 2
+        return scope;
+    };
+    return myscope;
+};
+
+console.log(foo()()); // => "inner"
+console.log(scope); // => "global"
+</pre>
+
+---
+
+title: JavaScript
+subtitle: It's a trap!
+
+<pre class="prettyprint" data-lang="javascript">
+function User() {
+    this.name = 'Átila';
+    this.uid = 0;
+}
+
+User.prototype.get = function(fn) {
+    return fn();
+};
+
+var user = new User();
+var name = user.get(function() {
+    return this.name;
+});
+console.log('name: ' + name);
+</pre>
+
+---
+
+title: JavaScript
+subtitle: It's a trap!
+
+<pre>
+~/fp-like/src/self-worng.js:15
+    return this.name;
+               ^
+TypeError: Cannot read property 'name' of undefined
+</pre>
+
+---
+
+title: JavaScript
+subtitle: It's a trap!
+
+<pre class="prettyprint" data-lang="javascript">
+function User() {
+    this.name = 'Átila';
+    this.uid = 0;
+}
+
+User.prototype.get = function(fn) {
+    return fn(<b>this</b>);
+};
+
+var user = new User();
+var name = user.get(function(<b>self</b>) {
+    return <b>self.name</b>;
+});
+console.log('name: ' + name);
+</pre>
+
+---
+
+title: JavaScript
+subtitle: Extensível!
+
+<pre class="prettyprint" data-lang="javascript">
+var user = new User();
+var uid_name_s = user.get(function(self) {
+    return 'uid: ' + self.uid + ', name: ' + self.name;
+});
+console.log(uid_name_s);
+</pre>
+
+Saída:
+
+<pre>
+uid: 0, name: Átila
+</pre>
 
 ---
 
@@ -44,16 +205,23 @@ JavaScript
 * <http://xkr.us/articles/javascript/unary-add/>
 * <http://eloquentjavascript.net/1st_edition/chapter6.html>
 * <http://eliperelman.com/fn.js/>
-* <http://jhusain.github.io/learnrx/>
-* <http://tech.pro/tutorial/2009/functional-javascript-part-2-what-makes-a-language-functional>
 
 ---
 
 title: Links
 
+JavaScript
+
+* <http://jhusain.github.io/learnrx/>
+* <http://tech.pro/tutorial/2009/functional-javascript-part-2-what-makes-a-language-functional>
+
 Ruby
 
 * <http://pt.slideshare.net/tokland/functional-programming-with-ruby-9975242>
+
+---
+
+title: Links
 
 Python
 
