@@ -42,6 +42,12 @@ title: Linguagens que suportam PF
 
 ---
 
+title: JavaScript
+class: segue nobackground fill
+image: img/js-bg.jpg
+
+---
+
 title: Linguagens que suportam PF
 
 ## JavaScript
@@ -114,6 +120,13 @@ var foo = function(){
 console.log(foo()()); // => "inner"
 console.log(scope); // => "global"
 </pre>
+
+---
+
+title: JavaScript
+subtitle: "It's a trap!"
+class: segue nobackground fill
+image: img/js-its-a-trap.jpg
 
 ---
 
