@@ -1,9 +1,9 @@
 title: Agenda
 
 * Introdução
-* JavaScript
 * Python
 * Ruby
+* JavaScript
 * Outras
 
 ---
@@ -30,15 +30,256 @@ funções.
 
 ---
 
+title: Python
+class: segue nobackground fill
+image: img/py-bg.jpg
+
+---
+
 title: Linguagens que suportam PF
 
 ## Python
+
+* Funções `lambda`
+* Funções de primeira importância
+* Funções podem retornam funções
+
+---
+
+title: Python
+subtitle: Funções lambda
+
+<pre class="prettyprint" data-lang="python">
+multi = lambda x, y: x * y
+
+print multi(2, 3)
+&#35; => 6
+</pre>
+
+<pre class="prettyprint" data-lang="python">
+print map(lambda x: x ** 2, [1, 2, 3, 4, 5])
+&#35; => [1, 4, 9, 16, 25]
+</pre>
+
+---
+
+title: Python
+subtitle: Funções de primeira importância
+
+<pre class="prettyprint" data-lang="python">
+list = [1, 2, 3, 4, 5]
+filter(lambda x: x % 2 == 0, list)
+&#35; => [2, 4]
+</pre>
+
+<pre class="prettyprint" data-lang="python">
+def square(x):
+    return x * x
+
+list = [1, 2, 3, 4, 5]
+map(square, list)
+&#35; => [1, 4, 9, 16, 25]
+</pre>
+
+---
+
+title: Python
+subtitle: Funções de primeira importância
+
+<pre class="prettyprint" data-lang="python">
+sum = reduce(lambda a, x: a + x, [0, 1, 2, 3, 4])
+print sum
+
+&#35; => 10
+</pre>
+
+---
+
+title: Python
+subtitle: Funções de primeira importância
+
+Exemplo real de uso em um programa que resolve o quebra-cabeça de 8 peças.
+
+<pre class="prettyprint" data-lang="python">
+def _generate_moves(self):
+    free = self._get_legal_moves()
+    zero = self.find(0)
+ 
+    def swap_and_clone(a, b):
+        p = self._clone()
+        p.swap(a,b)
+        p._depth = self._depth + 1
+        p._parent = self
+        return p
+
+    return map(lambda pair: swap_and_clone(zero, pair), free)
+</pre>
+
+<https://gist.github.com/flatline/838202>
+
+---
+
+title: Ruby
+class: segue nobackground fill
+image: img/rb-bg.jpg
 
 ---
 
 title: Linguagens que suportam PF
 
 ## Ruby
+
+* Funções de primeira importância, chamadas de _blocks_
+* Memoization ou guardar resultados de funções com alto nível de processamento
+
+---
+
+title: Ruby
+subtitle: Funções de primeira importância
+
+<pre class="prettyprint" data-lang="ruby">
+write_block = proc { |file| file.write("Hello World") }
+open("file.txt", &write_block)
+</pre>
+
+ou apenas
+
+<pre class="prettyprint" data-lang="ruby">
+open("file.txt") { |file| file.write("Hello World") }
+</pre>
+
+---
+
+title: Ruby
+subtitle: Funções de primeira importância
+
+Ruby se utiliza muito desse artifício, veja:
+
+<pre class="prettyprint" data-lang="ruby">
+a = %w{ a b c d e f }
+a.keep_if { |v| v =~ /[aeiou]/ }
+&#35; => ["a", "e"]
+</pre>
+
+---
+
+title: Ruby
+subtitle: Memoization
+
+<pre class="prettyprint" data-lang="ruby">
+class Location
+  def geocoding(lat, long)
+    &#35; ... complicated stuff goes here ..
+  end
+  
+  memoize :geocoding
+end
+
+location = Location.new
+location.geocoding(45.123, 123.45) &#35; => irá demorar um pouco
+location.geocoding(45.123, 123.45) &#35; => retorna imediatamente
+location.geocoding(12.876, 76.914) &#35; => não foi memorizado ainda, irá demorar
+location.geocoding(12.876, 76.914) &#35; => retorna imediatamente
+location.geocoding(45.123, 123.45) &#35; => retorna imediatamente, continua memorizado
+</pre>
+
+---
+
+title: Ruby
+subtitle: Memoization
+
+Como functiona? <https://github.com/tokland/simple_memoize>
+
+<pre class="prettyprint" data-lang="ruby">
+&#35; ... trecho
+def memoize(*method_names)
+  method_names.each do |method_name|
+    method_name = method_name.to_s
+    stripped_method_name = method_name.sub(/([!?])$/, '')
+    punctuation = $1
+    wordy_punctuation = (punctuation == '!' ? '_bang' : '_huh') if punctuation
+    ivar_name = "@#{stripped_method_name}#{wordy_punctuation}"
+    memoized_method_name = "#{stripped_method_name}_with_memo#{punctuation}"
+    regular_method_name = "#{stripped_method_name}_without_memo#{punctuation}"
+    &#35; ... continua ...
+</pre>
+
+---
+
+title: Ruby
+subtitle: Memoization
+
+<pre class="prettyprint" data-lang="ruby">
+return if self.method_defined?(memoized_method_name)
+self.class_eval "
+  def #{memoized_method_name}(*args)
+    if defined?(#{ivar_name}) && #{ivar_name}.include?(args)
+      #{ivar_name}[args]
+    else
+      #{ivar_name} ||= Hash.new
+      #{ivar_name}[args] = #{regular_method_name}(*args)
+    end
+  end
+  alias_method :#{regular_method_name}, :#{method_name}
+  alias_method :#{method_name}, :#{memoized_method_name}
+  protected :#{method_name} if protected_instance_methods.include?('#{regular_method_name}')
+  private :#{method_name} if private_instance_methods.include?('#{regular_method_name}')
+  "
+end
+</pre>
+
+---
+
+title: Ruby
+subtitle: Curiosidades
+
+<pre class="prettyprint" data-lang="ruby">
+irb(main):014:0> 1.methods
+=> ["%", "odd?", "inspect", "prec_i", "<<", "tap", "div", "&", "clone", ">>",
+"public_methods", "__send__", "object_id", "instance_variable_defined?",
+"equal?", "freeze", "to_sym", "*", "ord", "+", "extend", "next", "send",
+"round", "methods", "prec_f", "-", "even?", "singleton_method_added", "divmod",
+"hash", "/", "integer?", "downto", "dup", "to_enum", "instance_variables", "|",
+"eql?", "size", "instance_eval", "truncate", "~", "id", "to_i", "singleton_methods",
+"modulo", "taint", "zero?", "times", "instance_variable_get", "frozen?", "enum_for",
+"display", "instance_of?", "^", "method", "to_a", "+@", "-@", "quo", "instance_exec",
+"type", "**", "upto", "to_f", "<", "step", "protected_methods", "<=>", "between?",
+"==", "remainder", ">", "===", "to_int", "nonzero?", "pred", "instance_variable_set",
+"coerce", "respond_to?", "kind_of?", "floor", "succ", ">=", "prec", "to_s", "<=",
+"fdiv", "class", "private_methods", "=~", "tainted?", "__id__", "abs", "untaint",
+"nil?", "chr", "id2name", "is_a?", "ceil", "[]"]
+</pre>
+
+---
+
+title: Ruby
+subtitle: Curiosidades
+
+<pre class="prettyprint" data-lang="ruby">
+irb(main):022:0> 1 + 2
+=> 3
+irb(main):023:0> 1.+ 2
+=> 3
+irb(main):024:0> 1.+(2)
+=> 3
+irb(main):025:0> 10 / 2
+=> 5
+irb(main):026:0> 10./ 2
+=> 5
+irb(main):027:0> 10./(2)
+=> 5
+</pre>
+
+---
+
+title: Ruby
+subtitle: Curiosidades
+
+<https://github.com/ruby/ruby/>
+
+![Ruby is Ruby](img/ruby-is-ruby.png)
+
+<p class="big text-center">64.4% de Ruby é Ruby!</p>
 
 ---
 
@@ -231,6 +472,9 @@ JavaScript
 Ruby
 
 * <http://pt.slideshare.net/tokland/functional-programming-with-ruby-9975242>
+* <http://www.ruby-doc.org/core-2.1.2/Array.html>
+* <http://www.reactive.io/tips/2008/12/21/understanding-ruby-blocks-procs-and-lambdas/>
+* <https://github.com/ruby/ruby>
 
 ---
 
@@ -241,5 +485,6 @@ Python
 * <http://www.ibm.com/developerworks/library/l-prog/>
 * <http://anandology.com/python-practice-book/functional-programming.html>
 * <http://www.infoq.com/articles/fn.py-functional-programming-python>
+* <http://maryrosecook.com/blog/post/a-practical-introduction-to-functional-programming>
 
 

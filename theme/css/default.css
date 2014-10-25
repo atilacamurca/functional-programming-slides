@@ -349,7 +349,7 @@ slides > slide.backdrop:after, slides > slide.backdrop:before {
 }
 /* line 180, ../scss/default.scss */
 slides > slide > hgroup + article {
-  margin-top: 45px;
+  margin-top: 10px;
 }
 /* line 184, ../scss/default.scss */
 slides > slide > hgroup + article.flexbox.vcenter, slides > slide > hgroup + article.flexbox.vleft, slides > slide > hgroup + article.flexbox.vright {
@@ -849,6 +849,10 @@ article.smaller q:before, article.smaller q:after {
 
 strong {
 	font-weight: bold;
+}
+
+em {
+	font-style: italic;
 }
 
 /* Builds */
