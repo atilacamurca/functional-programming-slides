@@ -365,6 +365,39 @@ console.log(scope); // => "global"
 ---
 
 title: JavaScript
+subtitle: Exemplo - Funções de primeira importância
+
+<p class="big">Underscore.JS</p>
+
+Underscore is a JavaScript library that provides a whole mess of
+useful functional programming helpers without extending any built-in objects.
+
+Entre outras coisas: **map, filter, invoke**
+
+<http://underscorejs.org/>
+
+---
+
+title: JavaScript
+subtitle: Underscore.JS
+
+<pre class="prettyprint" data-lang="javascript">
+_.map([1, 2, 3], function(num){ return num * 3; });
+// => [3, 6, 9]
+_.map({one: 1, two: 2, three: 3}, function(num, key){ return num * 3; });
+// => [3, 6, 9]
+
+var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
+// => [2, 4, 6]
+
+var stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
+_.max(stooges, function(stooge){ return stooge.age; });
+// => {name: 'curly', age: 60};
+</pre>
+
+---
+
+title: JavaScript
 subtitle: "It's a trap!"
 class: segue nobackground fill
 image: img/js-its-a-trap.jpg
